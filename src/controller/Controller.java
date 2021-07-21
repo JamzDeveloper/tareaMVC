@@ -7,7 +7,6 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.PreparedStatement;
 import java.util.HashSet;
 import java.util.Iterator;
 import model.Client;
@@ -22,15 +21,15 @@ public class Controller implements ActionListener {
 
     Client cliente;
     Customers arrayClient = new Customers();
-    Main princial = new Main();
+    Main principal = new Main();
     Table tableData = new Table();
     Form form = new Form();
 
     public Controller(Main vista) {
-        this.princial = vista;
-        this.princial.jbtnAdd.addActionListener(this);
-        this.princial.jbtnData.addActionListener(this);
-        this.princial.jbtnExit.addActionListener(this);
+        this.principal = vista;
+        this.principal.jbtnAdd.addActionListener(this);
+        this.principal.jbtnData.addActionListener(this);
+        this.principal.jbtnExit.addActionListener(this);
 
         this.form.jbtnSubmit.addActionListener(this);
 
@@ -39,22 +38,35 @@ public class Controller implements ActionListener {
     @Override
 
     public void actionPerformed(ActionEvent e) {
-        
-        if (e.getSource() == this.princial.jbtnAdd) {
-            this.princial.jDesktop.add(form);
-            form.setSize(this.princial.jDesktop.getWidth(), this.princial.jDesktop.getHeight());
+
+        if (e.getSource() == this.principal.jbtnAdd) {
+
+            this.principal.jDesktop.remove(tableData);
+            System.out.println("antes de setDefa");
+            tableData.setDefaultCloseOperation(tableData.EXIT_ON_CLOSE);//
+            System.out.println("antes de add from");
+
+            this.principal.jDesktop.add(form);
+            System.out.println("antes de form.setSize");
+            form.setSize(this.principal.jDesktop.getWidth(), this.principal.jDesktop.getHeight());
+            //tableData.setVisible(false);
             form.setVisible(true);
-            tableData.dispose();
+            // tableData.dispose();
+
         }
-        if (e.getSource() == this.princial.jbtnData) {
-           form.dispose();
-           // form.setVisible(false);
-            this.princial.jDesktop.add(tableData);
-            tableData.setSize(this.princial.jDesktop.getWidth(), this.princial.jDesktop.getHeight());
+
+        if (e.getSource() == this.principal.jbtnData) {
+
+            form.setDefaultCloseOperation(tableData.EXIT_ON_CLOSE);//
+            // form.dispose();
+            //form.setVisible(false);
+            this.principal.jDesktop.remove(form);
+            this.principal.jDesktop.add(tableData);
+            tableData.setSize(this.principal.jDesktop.getWidth(), this.principal.jDesktop.getHeight());
             tableData.setVisible(true);
         }
         if (e.getSource() == this.form.jbtnSubmit) {
-            
+
             System.out.println("enviar");
             String name = this.form.jtextName.getText();
             short years = Short.parseShort(this.form.jspinnerYears.getValue().toString());
@@ -68,10 +80,15 @@ public class Controller implements ActionListener {
             showData();
 
         }
+        if (e.getSource() == this.principal.jbtnExit) {
+            this.principal.dispose();
+
+        }
 
     }
 
     private void showData() {
+        //insert data in table
         System.out.println("table");
 
         HashSet<Client> dataClient = arrayClient.getCustomers();
@@ -82,6 +99,7 @@ public class Controller implements ActionListener {
         Iterator<Client> iterador = dataClient.iterator();
 
         int i = 0;
+
         while (iterador.hasNext()) {
 
             cli = iterador.next();
